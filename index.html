@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="./css/main.css">
+
+		<script src="./vendor/jquery.min.js"></script>
+		<script src="./vendor/bootstrap/js/popper.min.js"></script>
+		<script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+		<title>fabric canvas app</title>
+		<style>
+			.canvas-container {
+				border-radius: 1px;
+				box-shadow: 5px 5px 5px lightgray;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- nav bar -->
+		<nav class="navbar sticky-top navbar-light bg-secondary">
+			<a class="navbar-brand" href="#">
+				<img src="./assets/icons/heart-fill.svg" alt="">
+				<span>Fabrics-Study App</span>
+				<button  class="btn btn-light" id="btn-try">Try</button>
+				<button  class="btn btn-light" id="btn-undo">Undo</button>
+				<button  class="btn btn-light" id="btn-redo">Redo</button>
+			</a>
+		</nav>
+		<!-- main container -->
+		<div class="overflow-hidden">
+			<!-- draw button div -->
+			<div class="float-left m-3">
+				<button class="btn btn btn-dark btn-lg mb-2" id="btn-draw-mode" data-toggle="collapse" data-target="#draw-properties">Drawing Mode</button>
+			</div>
+			<!-- canvas wrapper -->
+			<div class="float-left position-relative m-3" bis_skin_checked="1">
+				<canvas class="border"id="c" width="800" height="600"></canvas>
+			</div>
+			<!-- options wrapper -->
+			<div class="float-left m-3" id="mydiv" >
+				<!-- clear and delete and download button -->
+				<button class="btn btn btn-danger" id="btn-clear-canvas">Clear Canvas</button>
+				<button class="btn btn btn-danger btn-sm" id="btn-delete">Delete</button>
+				<button class="btn btn btn-success btn-sm" id="btn-download">Download</button>
+				<!-- collabpse properties for draw-mode -->
+				<div class="collapse" id="draw-properties">
+					<hr>
+					<!-- brush-type input -->
+					<div class="row">
+						<label class="col-sm-5 col-form-label" for="brush-type">Brush</label>
+						<div class="col-sm-5">
+							<select class="form-control" id="brush-type">
+								<option value="Pencil">Pencil</option>
+								<option value="Circle">Circle</option>
+								<option value="Spray">Spray</option>
+							</select>
+						</div>
+					</div>
+					<!-- brush-size input -->
+					<div class="row">
+						<label class="col-sm-5 col-form-label" for="brush-size">brush-Size</label>
+						<div class="col mt-2"><input class="form-control-range" type="range" name="brush-size" id="brush-size" min="1" max="150"></div>
+					</div>
+					<!-- brush-color input -->
+					<div class="row">
+						<label class="col-sm-5 col-form-label" for="brush-color">brush-color</label>
+						<div class="col"><input class="form-control" type="color" name="brush-color" id="brush-color"></div>
+					</div>
+				</div>
+				<!-- nav for different canvas elements -->
+				<nav>
+					<div class="nav nav-tabs mb-3 mt-3" id="nav-tab" role="tablist">
+						<a class="nav-item nav-link" id="nav-canvas-tab" data-toggle="tab" href="#nav-canvas" role="tab" aria-controls="nav-canvas" aria-selected="true">Canvas</a>
+						<a class="nav-item nav-link" id="nav-shapes-tab" data-toggle="tab" href="#nav-shapes" role="tab" aria-controls="nav-shapes" aria-selected="true">Shapes</a>
+						<a class="nav-item nav-link" id="nav-text-tab" data-toggle="tab" href="#nav-text" role="tab" aria-controls="nav-text" aria-selected="true">Text</a>
+						<a class="nav-item nav-link" id="nav-image-tab" data-toggle="tab" href="#nav-image" role="tab" aria-controls="nav-image" aria-selected="true">Image</a>
+						<a class="nav-item nav-link" id="nav-svg-tab" data-toggle="tab" href="#nav-svg" role="tab" aria-controls="nav-svg" aria-selected="true">SVG</a>
+						<a class="nav-item nav-link active" id="nav-properties-tab" data-toggle="tab" href="#nav-properties" role="tab" aria-controls="nav-properties" aria-selected="true">Properties</a>
+					</div>
+				</nav>
+				<!-- nav tab-contens for nav -->
+				<div class="tab-content" id="nav-tabContent">
+					<!-- canvas tab content -->
+					<div class="tab-pane fade" id="nav-canvas" role="tabpanel" aria-labelledby="nav-canvas-tab">
+						<!-- background and preserve stacking -->
+						<div class="bg-light p-2">
+							<div class="row ml-0">
+								<label title="Add a background" class="input-file btn btn-dark"><span class="mdi mdi-image">Add Background</span>&nbsp;
+									<input type="file" id="input-background-image" />
+								 </label>
+								<div class="col custom-control custom-checkbox ml-2">
+									<input class="custom-control-input" type="checkbox" name="preserveObjectStacking" id="input-preserveObjectStacking">
+									<label class="custom-control-label" for="input-preserveObjectStacking">Preserve ObjectStacking</label>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<label class="col-sm-5" for="shape-fill-color">Background color</label>
+								<input class="col-sm-3 form-control" type="color" name="canvas-backgroundColor" id="canvas-backgroundColor">
+							</div>
+						</div>
+						<hr>
+						<!-- aspect ratio -->
+						<div class="row bg-light p-2">
+							<label class="col-sm-5 pt-2" for="aspect-ratio">Aspect Ratio</label>
+							<select class="col-sm-3 form-control mb-3" id="aspect-ratio">
+								<option value="960*720">4:3</option>
+								<option value="1280*720">16:9</option>
+								<option value="720*720">1:1</option>
+							</select>
+						</div>
+						<hr>
+					</div>
+					<!-- shapes tab contenet -->
+					<div class="tab-pane fade" id="nav-shapes" role="tabpanel" aria-labelledby="nav-shapes-tab">
+						<!-- shapes button div -->
+						<div class="mt-2 bg-light p-2" id="shapes-div">
+							<a class="btn btn-light btn-sm" id="btn-shape-circle" href="#" role="button" ><img src="./assets/shapes/circle-fill.svg" alt=""></a>
+							<a class="btn btn-light btn-sm" id="btn-shape-line" href="#" role="button" ><img src="./assets/shapes/line.svg" alt=""></a>
+							<a class="btn btn-light btn-sm" id="btn-shape-ellipse" href="#" role="button" ><img src="./assets/shapes/ellipse-fill.svg" alt=""></a>
+							<a class="btn btn-light btn-sm" id="btn-shape-polygon" href="#" role="button" ><img src="./assets/shapes/polygon-fill.svg" alt=""></a>
+							<a class="btn btn-light btn-sm" id="btn-shape-rectangle" href="#" role="button" ><img src="./assets/shapes/rectangle-fill.svg" alt=""></a>
+							<a class="btn btn-light btn-sm" id="btn-shape-triangle" href="#" role="button" ><img src="./assets/shapes/triangle-fill.svg" alt=""></a>
+						</div>
+						<hr>
+						<!-- properties of the shape object -->
+						<div class="mt-2 bg-light p-2 disablediv" id="shapes-properties-div">
+							<p class="page-header">Properties</p>
+							<div class="row">
+								<label class="col-sm-5" for="shape-fill-color">Fill-color</label>
+								<input class="col-sm-3 form-control mb-2" type="color" name="fill" id="shape-fill-color">
+							</div>
+							<div class="row">
+								<label class="col-sm-5" for="shape-stroke-color">Stroke-color</label>
+								<input class="col-sm-3 form-control mb-2" type="color" name="stroke" id="shape-stroke-color">
+							</div>
+							<div class="row">
+								<label class="col-sm-5" for="shape-stroke-width">Stroke-width</label>
+								<div class="col pl-0"><input class="form-control-range" type="range" name="strokeWidth" id="shape-stroke-width" min="0" max="30"></div>
+							</div>
+							<div class="row">
+								<label class="col-sm-5" for="shape-opacity">Opacity</label>
+								<div class="col pl-0"><input class="form-control-range" type="range" name="opacity" id="shape-opacity" min="1" max="100"></div>
+							</div>
+							<hr>
+						</div>
+					</div>
+					<!-- text tab content -->
+					<div class="tab-pane fade" id="nav-text" role="tabpanel" aria-labelledby="nav-text-tab">
+						<!-- Insert text -->
+						<div class="mt-2 p-2 bg-light ">
+							<div class="row">
+								<textarea class="col form-control ml-3" type="text" name="sample-text" id="smaple-text" placeholder="Type here and preses insert"></textarea>
+								<button type="button" class="col col-sm-3 btn btn-dark ml-2" id="btn-insert-text">Insert Text</button>
+							</div>
+						</div>
+						<hr>
+						<!-- text properties -->
+						<div class="mt-2 bg-light p-2" id="text-properties-div">
+							<!-- style and alignment -->
+							<div class="m-0 row" id="text-style-div">
+								<a class=" btn btn-light" id="btn-text-bold" name="fontWeight_bold" href="#" role="button"><img src="./assets/icons/bold.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-italic" name="fontStyle_italic" href="#" role="button"><img src="./assets/icons/italic.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-underline" name="textDecoration_underline" href="#" role="button"><img src="./assets/icons/underline.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-strikethrough" name="textDecoration_linethrough" href="#" role="button"><img src="./assets/icons/strikethrough.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-left" name="textAlign_left" href="#" role="button"><img src="./assets/icons/text-align-left.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-center" name="textAlign_center" href="#" role="button"><img src="./assets/icons/text-align-center.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-right" name="textAlign_right" href="#" role="button"><img src="./assets/icons/text-align-right.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-justify-left" name="textAlign_justify-left" href="#" role="button"><img src="./assets/icons/text-align-justify-left.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-justify"  name="textAlign_justify" href="#" role="button"><img src="./assets/icons/text-align-justify.svg" alt="" width="32" height="32"></a>
+								<a class=" btn btn-light " id="btn-text-algin-justify-right" name="textAlign_justify-right" href="#" role="button"><img src="./assets/icons/text-align-justify-right.svg" alt="" width="32" height="32"></a>
+							</div>
+							<!-- font color -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-color">Font-Color</label>
+								<input class="col col-sm-2  form-control mb-2" type="color" name="fill" id="font-color">
+							</div>
+							<!-- font background color -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-background">Font-Background</label>
+								<input class="col col-sm-2  form-control mb-2" type="color" name="textBackgroundColor" id="font-background">
+							</div>
+							<!-- font size -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-size">Font-Size</label>
+								<div class="col col-sm-5 pl-0"><input class="form-control-range" type="range" name="fontSize" id="font-size" min="1"></div>
+							</div>
+							<!-- line spaceing -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-linespacing">Line-Spacing</label>
+								<div class="col col-sm-5 pl-0"><input class="form-control-range" type="range" name="lineHeight" id="font-linespacing" min="1"></div>
+							</div>
+							<!-- cahr spacing -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-charspacing">character-Spacing</label>
+								<div class="col col-sm-5 pl-0"><input class="form-control-range" type="range" name="charSpacing" id="font-charspacing" min="1"></div>
+							</div>
+							<!-- opacity -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-opacity">Opacity</label>
+								<div class="col col-sm-5 pl-0"><input class="form-control-range" type="range" name="opacity" id="font-opacity" min="1" max="100"></div>
+							</div>
+							<!-- font fmaily -->
+							<div class="mt-2 row">
+								<label class="col-sm-5" for="font-family">Font-Family</label>
+								<select class="col col-sm-4 form-control" name="fontFamily" id="font-family">
+									<option value="helvetica" selected="">Helvetica</option>
+									<option value="arial">Arial</option>
+									<option value="myriad pro">Myriad Pro</option>
+									<option value="delicious">Delicious</option>
+									<option value="verdana">Verdana</option>
+									<option value="georgia">Georgia</option>
+									<option value="courier">Courier</option>
+									<option value="comic sans ms">Comic Sans MS</option>
+									<option value="impact">Impact</option>
+									<option value="monaco">Monaco</option>
+									<option value="optima">Optima</option>
+									<option value="hoefler text">Hoefler Text</option>
+									<option value="plaster">Plaster</option>
+									<option value="engagement">Engagement</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<!-- image tab content -->
+					<div class="tab-pane fade" id="nav-image" role="tabpanel" aria-labelledby="nav-image-tab">
+						<!-- insert image -->
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="inputGroupFileAddon01">Insert Image</span>
+							</div>
+							<div class="custom-file">
+								<input type="file" class="custom-file-input" id="input-image" style="white-space:pre-wrap;">
+								<label class="custom-file-label" for="input-image" >Choose file</label>
+							</div>
+						</div>
+						<!-- image filters -->
+						<div class="row mt-2 m-0 bg-light p-2">
+							<div class="col">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="invert">
+									<label class="custom-control-label" for="invert">Invert</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="brownie">
+									<label class="custom-control-label" for="brownie">Brownie</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="vintage">
+									<label class="custom-control-label" for="vintage">Vintage</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="technicolor">
+									<label class="custom-control-label" for="technicolor">Technicolor</label>
+								</div>
+							</div>
+							<div class="col">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="polaroid">
+									<label class="custom-control-label" for="polaroid">Polaroid</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="kodachrome">
+									<label class="custom-control-label" for="kodachrome">Kodachrome</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="blackwhite">
+									<label class="custom-control-label" for="blackwhite">Blackwhite</label>
+								</div>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="grayscale">
+									<label class="custom-control-label" for="grayscale">Grayscale</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- svg tab contents -->
+					<div class="tab-pane fade" id="nav-svg" role="tabpanel" aria-labelledby="nav-svg-tab">
+						<label for="text-area-sv"></label>
+						<textarea class="form-control" id="text-area-svg" rows="20" placeholder="type ur SVG code here"></textarea>
+						<button class="btn btn-dark mt-2" id="btn-insert-svg">Insert SVG</button>
+					</div>
+					<!-- properties tab -->
+					<div class="tab-pane fade active show" id="nav-properties" role="tabpanel" aria-labelledby="nav-properties-tab">
+						<div class="mt-2 bg-light p-2" id="properties-div">
+							<p class="page-header">Properties</p>
+							<!-- fill color-->
+							<div class="row">
+								<label class="col-sm-5" for="prop-fill-color">Fill-color</label>
+								<input class="col-sm-3 form-control mb-2" type="color" name="fill" id="prop-fill-color">
+							</div>
+							<!-- stroke color -->
+							<div class="row">
+								<label class="col-sm-5" for="prop-stroke-color">Stroke-color</label>
+								<input class="col-sm-3 form-control mb-2" type="color" name="stroke" id="prop-stroke-color">
+							</div>
+							<!-- background color -->
+							<div class="row">
+								<label class="col-sm-5" for="prop-stroke-color">Background color</label>
+								<input class="col-sm-3 form-control mb-2" type="color" name="backgroundColor" id="prop-backgroundColor-color">
+							</div>
+							<!-- stroke width -->
+							<div class="row">
+								<label class="col-sm-5" for="prop-stroke-width">Stroke-width</label>
+								<div class="col pl-0"><input class="form-control-range" type="range" name="strokeWidth" id="prop-stroke-width" min="0" max="30"></div>
+							</div>
+							<!-- opacity -->
+							<div class="row">
+								<label class="col-sm-5" for="prop-opacity">Opacity</label>
+								<div class="col pl-0"><input class="form-control-range" type="range" name="opacity" id="prop-opacity" min="1" max="100"></div>
+							</div>
+							<!-- shadow -->
+							<div class="mt-2 custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" name="shadow" id="prop-shadow">
+								<label class="custom-control-label" for="prop-shadow">Shadow</label>
+							</div>
+							<!-- clip -->
+							<div class="mt-2 custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" name="clip" id="prop-clip">
+								<label class="custom-control-label" for="prop-clip">Clip</label>
+							</div>
+							<hr>
+						</div>
+					</div>
+				</div>
+				<!-- stack properties -->
+				<div class="bg-light mt-2" id="shapes-stacking-div">
+					<a class=" btn btn-light btn-sm" id="btn-shape-bringfront" name="bringForward" href="#" role="button" ><img src="./assets/icons/arrow-bar-left.svg" alt="">Bring Front</a>
+					<a class=" btn btn-light btn-sm" id="btn-shape-bringback" name="sendBackwards" href="#" role="button" ><img src="./assets/icons/arrow-bar-right.svg" alt="">Go Back</a>
+					<a class=" btn btn-light btn-sm" id="btn-shape-bringforward"  name="bringToFront" href="#" role="button" ><img src="./assets/icons/skip-forward-fill.svg" alt=""> Brig Forrward</a>
+					<a class=" btn btn-light btn-sm" id="btn-shape-bringbackward" name="sendToBack" href="#" role="button" ><img src="./assets/icons/skip-backward-fill.svg" alt="">Go Backward</a>
+				</div>
+			</div>
+		</div>
+		<script src="./vendor/fabric.min.js"></script>
+		<script src="./js/main.js"></script>
+	</body>
+</html>

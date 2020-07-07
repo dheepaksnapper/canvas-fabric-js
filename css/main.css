@@ -1,0 +1,14 @@
+.disablediv {
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.enablediv {
+    pointer-events: all;
+    opacity: 1;
+}
+
+.input-file input[type="file"] {
+    position: absolute;
+    top: 0;
+ }
